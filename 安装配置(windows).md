@@ -4,15 +4,15 @@
 安装Go语言需要配置的环境变量有GOROOT、GOPATH和Path
 1. 配置GOROOT
    GOROOT的变量值即为GO的安装目录
-   ![img.png](img.png)
+   ![img.png](static/imgs/img.png)
    
 2. 配置GOPATH
    GOPATH的变量值即为存储Go语言项目的路径
-   ![img_1.png](img_1.png)
+   ![img_1.png](static/imgs/img_1.png)
    
 3. 配置Path
    Path中有其他安装程序的配置信息，这里再增加一个GO的bin目录
-   ![img_2.png](img_2.png)
+   ![img_2.png](static/imgs/img_2.png)
    
 ## 步骤三：验证是否配置成功
 1. 打开命令行工具，输入命令go env
