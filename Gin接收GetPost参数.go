@@ -6,6 +6,38 @@ import (
 	"net/http"
 )
 
+//1.返回json
+//c.JSON(200,gin.H{"msg":"OK"})
+//c.JSON(200,结构体)
+//2.返回模版
+//router.LoadHTMLGlob("templates/**/*")
+//router.GET("/test/index", func(c *gin.Context){
+//	c.HTML(http.StatusOK, "test/index.tmpl", gin.H{
+//		"msg": "test",
+//	})
+//})
+//模版index.tmpl
+/**
+{{define "test/index.tmpl"}}
+<html>
+
+    <head>
+    </head>
+
+    <body>
+
+        test...
+
+        {{.}}
+        -----
+        {{.msg}}
+
+    </body>
+
+</html>
+
+{{end}}
+*/
 type User struct {
 	Username string `form:"username" json:"username" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required"`
@@ -25,6 +57,26 @@ func login(c *gin.Context) {
 		"username": user.Username,
 		"password": user.Password,
 	})
+}
+func uploads(c *gin.Context) {
+	//多文件
+	//获取解析后表单
+	form, _ := c.MultipartForm()
+	//这里是多文件上传 在之前单文件upload上传的基础上加 [] 变成upload[] 类似文件数组的意思
+	files := form.File["upload[]"]
+	//files := form.File["file"]
+	//循环存文件到服务器本地
+	for _, file := range files {
+		fmt.Println(file.Filename)
+		//dst:=fmt.Sprintf("D:/GO/src/github.com/teacherwyang@163.com/StudyGo/uploads/%s",file.Filename)
+		dst := fmt.Sprintf("./uploads/%s", file.Filename)
+		fmt.Println(dst)
+		c.SaveUploadedFile(file, dst)
+		c.JSON(http.StatusOK, gin.H{
+			"msg": "ok",
+		})
+		c.String(http.StatusOK, fmt.Sprintf("%d files uploaded!", len(files)))
+	}
 }
 func main() {
 	r := gin.Default()
@@ -53,5 +105,6 @@ func main() {
 		})
 	})
 	r.POST("/login", login)
+	r.POST("/uploads", uploads)
 	r.Run()
 }
