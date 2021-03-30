@@ -21,6 +21,7 @@ import (
 </body>
 </html>
 */
+const BASE_NAME = "./static/file/"
 
 func main() {
 	router := gin.Default()

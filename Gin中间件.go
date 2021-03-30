@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -21,6 +22,16 @@ func StatCost() gin.HandlerFunc {
 		log.Println(cost)
 	}
 }
+
+// 定义一个中间件
+func MyFMT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		host := c.Request.Host
+		fmt.Printf("Before: %s\n", host)
+		c.Next()
+		fmt.Println("Next: ...")
+	}
+}
 func main() {
 	// 新建一个没有任何默认中间件的路由
 	r := gin.New()
@@ -36,7 +47,7 @@ func main() {
 	})
 	//为某个路由单独注册
 	// 给/test2路由单独注册中间件（可注册多个）
-	r.GET("/test2", StatCost(), func(c *gin.Context) {
+	r.GET("/test2", MyFMT(), func(c *gin.Context) {
 		name := c.MustGet("name").(string) // 从上下文取值
 		log.Println(name)
 		c.JSON(http.StatusOK, gin.H{
