@@ -27,12 +27,12 @@ func initDB() (err error) {
 
 type user struct {
 	ID       int    `db:"id"`
-	password string `db:"password"`
-	username string `db:"username"`
+	Password string `db:"password"`
+	Username string `db:"username"`
 }
 
 func (u user) Value() (driver.Value, error) {
-	return []interface{}{u.username, u.password}, nil
+	return []interface{}{u.Username, u.Password}, nil
 }
 
 // BatchInsertUsers2 使用sqlx.In帮我们拼接语句和参数, 注意传入的参数是[]interface{}
@@ -62,12 +62,12 @@ func queryRowDemo() {
 		fmt.Printf("get failed, err:%v\n", err)
 		return
 	}
-	fmt.Printf("id:%d name:%s age:%d\n", u.ID, u.username, u.password)
+	fmt.Printf("id:%d name:%s password:%s\n", u.ID, u.Username, u.Password)
 }
 
 // 查询多条数据示例
 func queryMultiRowDemo() {
-	sqlStr := "select id,username, password from user where id > ?"
+	sqlStr := "select id,username, password from sys_user where id > ?"
 	var users []user
 	err := db.Select(&users, sqlStr, 0)
 	if err != nil {
@@ -155,7 +155,7 @@ func namedQuery() {
 	}
 
 	u := user{
-		username: "admin",
+		Username: "admin",
 	}
 	// 使用结构体命名查询，根据结构体字段的 db tag进行映射
 	rows, err = db.NamedQuery(sqlStr, u)
@@ -261,8 +261,8 @@ func main() {
 		return
 	}
 	fmt.Println("init DB success...")
-	//queryRowDemo()
-	//queryMultiRowDemo()
+	queryRowDemo()
+	queryMultiRowDemo()
 	//insertUserDemo()
 	//namedQuery()
 	//transactionDemo2()
@@ -271,25 +271,26 @@ func main() {
 	//u3 := user{Name: "xxxx", Age: 38}
 	//users := []interface{}{u1, u2, u3}
 	//BatchInsertUsers2(users)
-	namedQuery()
-	users, err := QueryByIDs([]int{7, 5, 6, 1})
-	if err != nil {
-		fmt.Printf("QueryByIDs failed, err:%v\n", err)
-		return
-	}
-	for _, user := range users {
-		fmt.Printf("user:%#v\n", user)
-	}
-	// 1. 用代码去做排序
-	// 2. 让MySQL排序
-	fmt.Println("----")
-	users, err = QueryAndOrderByIDs([]int{2, 5, 6, 1})
-	if err != nil {
-		fmt.Printf("QueryByIDs failed, err:%v\n", err)
-		return
-	}
-	for _, user := range users {
-		fmt.Printf("user:%#v\n", user)
-	}
+	//
+	//namedQuery()
+	//users, err := QueryByIDs([]int{7, 5, 6, 1})
+	//if err != nil {
+	//	fmt.Printf("QueryByIDs failed, err:%v\n", err)
+	//	return
+	//}
+	//for _, user := range users {
+	//	fmt.Printf("user:%#v\n", user)
+	//}
+	//// 1. 用代码去做排序
+	//// 2. 让MySQL排序
+	//fmt.Println("----")
+	//users, err = QueryAndOrderByIDs([]int{2, 5, 6, 1})
+	//if err != nil {
+	//	fmt.Printf("QueryByIDs failed, err:%v\n", err)
+	//	return
+	//}
+	//for _, user := range users {
+	//	fmt.Printf("user:%#v\n", user)
+	//}
 
 }
